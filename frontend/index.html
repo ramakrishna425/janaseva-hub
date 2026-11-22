@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#123c32"><meta name="description" content="Janaseva Hub - public services, learning and personal planning">
+<link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+<link rel="stylesheet" href="/styles.css"><link rel="stylesheet" href="/live-archive.css"><title>Janaseva Hub</title>
+  <link rel="manifest" href="/manifest.webmanifest">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <link rel="apple-touch-icon" href="/assets/janaseva-pwa.svg">
+</head>
+<body>
+<header class="topbar">
+ <a class="brand" href="#"><img src="/assets/favicon.svg" alt="Janaseva Hub logo"><span>Janaseva <b>Hub</b><small>PUBLIC SERVICE, MADE SIMPLE</small></span></a>
+ <nav class="main-nav"><button data-view="dashboard" class="nav active">Overview</button><button data-view="services" class="nav">Services</button><button data-view="live-updates" class="nav">Live Updates</button><button data-view="learning" class="nav">Learning Center</button><div class="nav-menu"><button class="nav nav-menu-trigger" type="button">Tools &amp; Resources ▾</button><div class="nav-menu-panel"><button data-view="planner" class="nav">Planner</button><button data-view="ai-tools" class="nav">AI Tools</button><button data-view="tools" class="nav">Document Studio</button><button data-view="emergency" class="nav">Emergency Helplines</button></div><button data-view="contact" class="nav">Contact / Help</button><button data-view="terms" class="nav">Terms &amp; Conditions</button></div></nav>
+ <div class="account"><span id="user-label">Guest</span><select id="language-select" aria-label="Language" class="language-select"><option value="en">English</option><option value="te">తెలుగు</option></select><button id="auth-button" class="btn light">Sign in</button></div>
+</header>
+<main>
+<section class="hero"><div><p class="eyebrow">YOUR EVERYDAY GOVERNMENT COMPANION</p><h1>Information. Learning.<br><em>One simple hub.</em></h1><p>Find trusted public services, explore learning resources and organise your next steps.</p><div class="hero-actions"><button class="btn primary" data-view="learning">Explore Learning Center</button><button class="btn outline" data-view="services">Find Services</button></div></div><div class="hero-art"><div class="seal">🇮🇳</div><strong>JANASEVA</strong><span>SEVA · SUPPORT · PROGRESS</span></div></section>
+<div id="notice" class="notice" hidden></div>
+<section id="dashboard" class="view active">
+ <aside class="calendar-corner" aria-label="Calendar widget">
+  <button type="button" id="calendar-open" class="calendar-corner-button"><span class="calendar-corner-icon">📅</span><span><small id="calendar-corner-month">CALENDAR</small><b id="calendar-corner-date">Today</b><small id="calendar-corner-next">View holidays & special dates</small></span><span class="calendar-corner-arrow">›</span></button>
+ </aside>
+ <div class="section-head"><div><p class="eyebrow">YOUR SPACE</p><h2>Welcome to Janaseva Hub</h2></div><span class="muted" id="today"></span></div>
+ <div class="stats"><article><span>📚</span><b>Learning</b><small>Anganwadi to Graduation</small></article><article><span>🏛️</span><b>Services</b><small>Central, State & UT portals</small></article><article><span>🔔</span><b>Updates</b><small>Government announcements</small></article><article><span>🧰</span><b>Tools</b><small>Planner, AI & Document Studio</small></article></div>
+ <div class="two-col"><article class="panel"><div class="section-head"><h3>Explore the Learning Center</h3><button class="text-btn" data-view="learning">Open Learning Center →</button></div><p class="muted">Early childhood learning, school and college study materials, competitive exam preparation, and health and well-being resources.</p><div class="card-actions"><button class="btn light" data-view="learning">Study Materials</button><button class="btn light" data-view="learning">Exam Preparation</button></div></article><article class="panel"><div class="section-head"><h3>Useful official portals</h3></div><a class="portal" href="https://services.india.gov.in/" target="_blank" rel="noreferrer">National Government Services Portal <span>↗</span></a><a class="portal" href="https://www.india.gov.in/" target="_blank" rel="noreferrer">National Portal of India <span>↗</span></a><a class="portal" href="https://diksha.gov.in/" target="_blank" rel="noreferrer">DIKSHA learning resources <span>↗</span></a><a class="portal" href="https://epathshala.nic.in/" target="_blank" rel="noreferrer">ePathshala <span>↗</span></a></article></div>
+</section>
+<section id="services" class="view">
+ <div class="section-head"><div><p class="eyebrow">CITIZEN DIGITAL SERVICES</p><h2>Government services</h2><p class="muted">Find trusted links for identity documents, certificates and useful government portals.</p></div></div>
+ <div class="service-notice">🔒 <span>Janaseva Hub only guides you to official portals. Do not enter Aadhaar numbers, OTPs, passwords or payment details on this website.</span></div>
+ <div class="service-controls"><input id="service-search" class="search" placeholder="Search services or portals…" aria-label="Search government services"><select id="service-state" class="service-filter" aria-label="Filter by state or union territory"><option value="all">All States &amp; Central Services</option></select><select id="service-category" class="service-filter" aria-label="Filter by category"><option value="all">All categories</option><option value="Identity">Identity & documents</option><option value="Transport">Transport</option><option value="State services">All State &amp; UT services</option><option value="Digital services">Digital services</option><option value="Welfare">Welfare & employment</option><option value="Education">Education</option><option value="Information">Government information</option></select></div>
+ <div id="services-list" class="service-grid"></div>
+ <p class="muted service-footnote">Portal availability, eligibility, fees and required documents may change. Confirm the latest details on the official website before applying.</p>
+</section>
+<section id="live-updates" class="view">
+ <div class="section-head"><div><p class="eyebrow">OFFICIAL SOURCE MONITOR</p><h2>Live government updates</h2><p class="muted">Latest government announcements and changes from configured official sources. No login required.</p></div><button class="btn light" id="live-refresh">Refresh now</button></div>
+ <div class="live-status panel"><div><strong id="live-source-status">Connecting to official sources…</strong><p class="muted" id="live-last-checked">Checking update status</p></div><span class="tag" id="live-refresh-rate">Auto refresh · 5 min</span></div>
+ <div class="notice-tabs"><button class="btn primary notice-tab active" data-notice-tab="datewise">Date-wise notifications</button><button class="btn light notice-tab" data-notice-tab="active">Active notifications</button></div>
+ <div id="datewise-panel">
+  <div class="live-date-filters"><label>From date<input type="date" id="notice-from"></label><label>To date<input type="date" id="notice-to"></label><input id="live-search" class="search" placeholder="Search notifications…" aria-label="Search notifications"><select id="live-category" class="service-filter" aria-label="Filter updates"><option value="all">All categories</option><option value="Government announcements">Government announcements</option><option value="Education & exams">Education & exams</option><option value="Public services">Public services</option></select><button class="btn light" id="notice-date-clear">Clear dates</button></div>
+  <div id="live-updates-list" class="live-updates-list"><div class="panel empty">Loading official updates…</div></div>
+ </div>
+ <div id="active-notifications-panel" hidden><p class="muted">Applications whose recorded start and last dates include today. Listings without confirmed application dates are not labelled active.</p><div id="active-notifications-list" class="live-updates-list"><div class="panel empty">Loading active notifications…</div></div><div id="upcoming-notifications-list" class="live-updates-list"></div></div>
+ <p class="muted live-footnote">Important: Current automatic source coverage is limited to configured official RSS feeds (including PIB). It does not yet monitor every Central, State or UT department. Verify announcements and dates on the original official website. A feed item disappearing from an RSS list is not treated as withdrawal; a linked notice is archived only after two separate 404/410 checks; temporary blocks and timeouts do not remove it.</p>
+</section>
+<section id="learning" class="view">
+ <div class="section-head"><div><p class="eyebrow">LEARN · PLAY · GROW</p><h2>Learning Center</h2><p class="muted">A curated directory of official learning resources for Anganwadi children, school students, intermediate, graduation and competitive exams.</p></div></div>
+ <div class="learning-path-grid">
+  <button class="learning-path-card" type="button" data-learning-stage="anganwadi"><span>🧸</span><b>Early Childhood · Anganwadi</b><small>Birth–6 years · pictures, rhymes, videos and play</small></button>
+  <button class="learning-path-card" type="button" data-learning-stage="school"><span>📚</span><b>Study Materials</b><small>School, Intermediate and Graduation resources</small></button>
+  <button class="learning-path-card" type="button" data-learning-stage="competitive"><span>🎯</span><b>Exam Preparation</b><small>Syllabus, previous papers and learning resources</small></button>
+  <button class="learning-path-card" type="button" data-learning-stage="wellbeing"><span>💚</span><b>Health & Well-being</b><small>Exercise, child development and stress support</small></button>
+ </div>
+ <div class="learning-intro"><strong>Browse all learning resources</strong><span>Choose an age group or education level. Filter by resource type to find videos, PDFs, books, images, activities and exam materials.</span></div>
+ <div class="learning-controls">
+  <input id="learning-search" class="search" placeholder="Search topics, subjects, portals or exams…" aria-label="Search learning resources">
+  <select id="learning-stage" class="service-filter" aria-label="Filter by learning stage"><option value="all">All stages</option><option value="study">Study Materials · School to Graduation</option><option value="anganwadi">Anganwadi · Birth–6 years</option><option value="school">School · Classes 1–10</option><option value="intermediate">Intermediate · 1st & 2nd year</option><option value="graduation">Graduation & higher education</option><option value="competitive">Competitive exams</option><option value="wellbeing">Health, exercise & well-being</option><option value="parents">Parents & teachers</option></select>
+  <select id="learning-format" class="service-filter" aria-label="Filter by resource format"><option value="all">All formats</option><option value="PDF">PDFs & books</option><option value="Video">Videos & audio-visual</option><option value="Images">Pictures & diagrams</option><option value="Activities">Activities & worksheets</option><option value="Courses">Courses & lessons</option><option value="Papers">Question papers & syllabus</option><option value="Support">Guidance & support</option></select>
+ </div>
+ <div class="learning-summary"><span id="learning-count">Curated learning links</span><span>Official and trusted portals · External links open in a new tab</span></div>
+ <div id="learning-resource-grid" class="learning-grid"></div>
+ <div class="learning-practice-grid">
+  <article class="panel"><p class="eyebrow">PLAY AND MOVE</p><h3>Simple age-appropriate activities</h3><ul><li><b>Birth–2 years:</b> Talk, sing, respond to sounds, show safe high-contrast pictures, supervised floor play and gentle movement. Follow the child's cues.</li><li><b>2–3 years:</b> Picture naming, stacking large blocks, sorting large safe objects, action songs, simple pretend play and short outdoor walks with an adult.</li><li><b>3–6 years:</b> Drawing, clay/playdough with supervision, storytelling, matching games, dancing, hopping, ball play and simple nature observations.</li><li><b>School age:</b> Outdoor games, cycling with safety gear, stretching, age-appropriate sports, reading, art and short movement breaks during study.</li></ul><p class="muted">Keep activities playful and inclusive. Adapt them to each child's abilities. Avoid small objects that can cause choking, sharp tools, forced exercise or unsupervised water play.</p></article>
+  <article class="panel"><p class="eyebrow">NOTICE AND SUPPORT</p><h3>Why children may feel stressed</h3><ul><li>Exam pressure, too much homework or fear of making mistakes.</li><li>Bullying, friendship difficulties, loneliness or feeling left out.</li><li>Family conflict, high expectations or frequent comparison with others.</li><li>Not understanding lessons, learning difficulties or lack of sleep.</li><li>Too little play, too many demands or upsetting online experiences.</li></ul><h3>What adults can do</h3><ul><li>Listen calmly without scolding; ask what is worrying the child.</li><li>Keep regular sleep, meals, play and study-break routines.</li><li>Make expectations realistic and praise effort, not only marks.</li><li>Talk with the child's teacher or school counsellor when needed.</li><li>Seek qualified professional help if distress persists or affects daily life.</li></ul></article>
+ </div>
+ <div class="learning-safety"><strong>For parents and caregivers</strong><p>For babies and young children, use adult-supervised, play-based interaction. Screen media should not replace sleep, movement, conversation or play. Never leave a child alone with online content. If a child has persistent distress or stress that affects daily life, seek support from a qualified professional or trusted school counsellor.</p></div>
+ <p class="muted learning-footnote">Janaseva Hub links to resources hosted by their publishers. Availability, language, class coverage and download permissions may vary by source. Textbooks, videos and images remain the property of their respective publishers; follow each site's terms.</p>
+</section>
+<section id="emergency" class="view">
+ <div class="section-head"><div><p class="eyebrow">HELP WHEN IT MATTERS</p><h2>Emergency Helpline Directory</h2><p class="muted">National helplines and State / UT emergency response contacts. In an immediate emergency in India, call 112.</p></div><a class="btn primary" href="tel:112">☎ Call 112</a></div>
+ <div class="service-notice">⚠️ <span>For immediate danger, call 112. Numbers and service availability can change; confirm non-112 contacts with the official department. Do not use this directory to delay emergency assistance.</span></div>
+ <div class="emergency-controls"><input id="emergency-search" class="search" type="search" placeholder="Search service, number, state, district or city…" aria-label="Search emergency helplines"><select id="emergency-region" class="service-filter" aria-label="Filter directory"><option value="all">All contacts</option><option value="national">Central / National</option><option value="state">State / UT</option></select><select id="emergency-state" class="service-filter" aria-label="Select state or union territory"><option value="all">All States & UTs</option></select></div>
+ <h3 class="emergency-subhead">Central / National Helplines</h3><div id="emergency-national-list" class="emergency-grid"></div>
+ <h3 class="emergency-subhead">State, District & City Contacts</h3><p class="muted">Local entries below are included only when a government source publishes the contact. Coverage currently includes verified entries from Andhra Pradesh, Telangana, Kerala, Tamil Nadu and Delhi. For other locations, use the official state or district directory links; 112 remains the nationwide urgent-emergency fallback.</p><div id="emergency-state-list" class="emergency-grid"></div>
+ <p class="emergency-sources">Official references: <a href="https://www.india.gov.in/directory/helpline" target="_blank" rel="noopener">National Portal of India – Helpline Directory</a> · <a href="https://www.mha.gov.in/emergency-response-support-system-erss" target="_blank" rel="noopener">Ministry of Home Affairs – ERSS 112</a>. Service names are shown in English and Telugu for convenience.</p>
+</section>
+<section id="planner" class="view"><div class="section-head"><div><p class="eyebrow">STAY ON TRACK</p><h2>My planner</h2><p class="muted">Sign in to save reminders and application notes to the local database.</p></div><button class="btn primary" id="add-reminder">＋ Add reminder</button></div><div id="reminders-list" class="stack panel"></div><div class="panel feed-panel"><div class="section-head"><div><h3>Live feed notifications</h3><p class="muted">Official feeds are checked every 15 minutes while this server is running. Public live updates do not require sign-in.</p></div><button class="btn light" id="check-feeds">Check now</button></div><div class="inline-form"><input id="feed-name" placeholder="Feed name"><input id="feed-url" placeholder="Public RSS/Atom feed URL"><button class="btn primary" id="add-feed">Add feed</button></div><div id="feeds-list" class="stack"></div><h3>Your notifications</h3><div id="notifications-list" class="stack"></div></div></section>
+<section id="tools" class="view">
+ <div class="section-head"><div><p class="eyebrow">PRIVATE, IN-BROWSER FILE WORKSPACE</p><h2>Document Studio</h2><p class="muted">Choose a tool below. Files are processed in your browser and are not uploaded to Janaseva Hub.</p></div></div>
+ <section class="scanner-workspace panel" aria-labelledby="scanner-heading">
+  <div class="scanner-heading"><div><p class="eyebrow">SCAN · SEARCH · CREATE</p><h3 id="scanner-heading">Smart Scanner</h3><p class="muted">Search Google, take document photos with your camera, or add images from your device. Send captured pages straight into Document Studio to create a PDF.</p></div><span class="scanner-mark">⌕</span></div>
+  <div class="scanner-search-row"><label class="scanner-search-label" for="scanner-google-query">Search Google</label><div class="scanner-search-controls"><input id="scanner-google-query" type="search" placeholder="Type what you want to search…"><button type="button" class="btn primary" id="scanner-google-search">Search Google ↗</button><button type="button" class="btn light" id="scanner-google-lens">Google Lens ↗</button></div></div>
+  <div class="scanner-capture-row"><div><b>Scan documents with camera</b><p class="muted">On a phone, this opens the rear camera. On a computer, choose an image or use a connected camera.</p></div><div class="scanner-actions"><label class="btn primary scanner-file-label" for="scanner-camera-input">📷 Open camera</label><input id="scanner-camera-input" class="visually-hidden-file" type="file" accept="image/*" capture="environment"><label class="btn light scanner-file-label" for="scanner-upload-input">＋ Upload photos</label><input id="scanner-upload-input" class="visually-hidden-file" type="file" accept="image/*" multiple></div></div>
+  <div id="scanner-pages-wrap" class="scanner-pages-wrap" hidden><div class="scanner-pages-head"><b id="scanner-pages-count">0 pages</b><button type="button" class="text-btn" id="scanner-clear-pages">Clear all</button></div><div id="scanner-pages" class="scanner-pages"></div><div class="scanner-export-row"><span class="muted">Pages will be combined in the order shown.</span><button type="button" class="btn primary" id="scanner-create-pdf">Create PDF in Document Studio</button></div></div>
+  <p id="scanner-status" class="result" role="status" aria-live="polite"></p>
+  <p class="scanner-privacy muted">Privacy: images stay in this browser and are not uploaded to Janaseva Hub. Google Search and Google Lens are external Google services; anything you submit there is subject to Google's policies.</p>
+ </section>
+ <div class="tool-tabs"><button class="tool-tab active" data-tool-tab="pdf-tools">PDF</button><button class="tool-tab" data-tool-tab="image-tools">Images</button><button class="tool-tab" data-tool-tab="office-tools">Word & Excel</button><button class="tool-tab" data-tool-tab="text-tools">Text editor</button><button class="tool-tab" data-tool-tab="calculators">Calculators</button></div>
+ <div id="pdf-tools" class="tool-pane active">
+  <div class="tool-grid">
+   <article class="panel"><h3>Merge PDF files</h3><p class="muted">Combine multiple PDFs into one file.</p><input id="pdf-merge-files" type="file" accept="application/pdf" multiple><button class="btn primary" id="pdf-merge-go">Merge and download</button><p class="result" id="pdf-merge-result"></p></article>
+   <article class="panel"><h3>Extract PDF pages</h3><p class="muted">Create a new PDF from selected pages, e.g. 1,3-5.</p><input id="pdf-split-file" type="file" accept="application/pdf"><input id="pdf-pages" placeholder="Pages: 1,3-5"><button class="btn primary" id="pdf-split-go">Extract pages</button><p class="result" id="pdf-split-result"></p></article>
+   <article class="panel"><h3>Rotate PDF pages</h3><p class="muted">Rotate every page by 90, 180 or 270 degrees.</p><input id="pdf-rotate-file" type="file" accept="application/pdf"><select id="pdf-rotate-deg"><option value="90">90° clockwise</option><option value="180">180°</option><option value="270">270° clockwise</option></select><button class="btn primary" id="pdf-rotate-go">Rotate and download</button><p class="result" id="pdf-rotate-result"></p></article>
+   <article class="panel"><h3>Images to PDF</h3><p class="muted">Combine JPG, PNG or WebP images into a PDF.</p><input id="images-pdf-files" type="file" accept="image/*" multiple><button class="btn primary" id="images-pdf-go">Create PDF</button><p class="result" id="images-pdf-result"></p></article>
+  </div>
+ </div>
+ <div id="image-tools" class="tool-pane"><div class="tool-grid">
+  <article class="panel"><h3>Convert / resize image</h3><input id="image-convert-file" type="file" accept="image/*"><label>Output format<select id="image-format"><option value="image/png">PNG</option><option value="image/jpeg">JPG</option><option value="image/webp">WebP</option></select></label><label>Width (pixels, optional)<input id="image-width" type="number" min="1" placeholder="Original width"></label><label>Quality <input id="image-quality" type="range" min="30" max="100" value="90"></label><button class="btn primary" id="image-convert-go">Convert and download</button><p class="result" id="image-convert-result"></p></article>
+  <article class="panel"><h3>Image to PDF</h3><p class="muted">Add several images as separate PDF pages.</p><input id="image-pdf-files-2" type="file" accept="image/*" multiple><button class="btn primary" id="image-pdf-go-2">Create PDF</button><p class="result" id="image-pdf-result-2"></p></article>
+ </div></div>
+ <div id="office-tools" class="tool-pane"><div class="tool-grid">
+  <article class="panel"><h3>Excel / CSV converter</h3><p class="muted">Convert CSV to XLSX or XLSX to CSV (first worksheet).</p><input id="sheet-file" type="file" accept=".csv,.xlsx,.xls"><select id="sheet-output"><option value="xlsx">Download as Excel (.xlsx)</option><option value="csv">Download as CSV (.csv)</option></select><button class="btn primary" id="sheet-convert-go">Convert file</button><p class="result" id="sheet-result"></p></article>
+  <article class="panel"><h3>Word document text extractor</h3><p class="muted">Extract editable text from a DOCX file. Download the result as TXT or HTML.</p><input id="docx-file" type="file" accept=".docx"><button class="btn primary" id="docx-extract-go">Extract text</button><textarea id="docx-text" rows="7" placeholder="Extracted Word text appears here"></textarea><button class="btn light" id="docx-save-txt">Download TXT</button><p class="result" id="docx-result"></p></article>
+ </div><p class="muted tool-note">Note: DOCX layout, tables, images and advanced formatting are not preserved by text extraction. Full DOCX editing and PDF-to-Word conversion are not included in this starter version.</p></div>
+ <div id="text-tools" class="tool-pane"><article class="panel"><h3>Text editor and export</h3><textarea id="studio-text" rows="12" placeholder="Type or paste text here…"></textarea><div class="card-actions"><button class="btn primary" id="text-save-txt">Download TXT</button><button class="btn light" id="text-save-html">Download HTML</button><button class="btn light" id="text-print-pdf">Print / Save as PDF</button></div></article></div>
+ <div id="calculators" class="tool-pane"><div class="tool-grid"><article class="panel"><h3>Percentage calculator</h3><input id="pct-a" type="number" placeholder="Percentage"><input id="pct-b" type="number" placeholder="Of number"><button class="btn primary" id="pct-go">Calculate</button><p id="pct-result" class="result"></p></article><article class="panel"><h3>Age calculator</h3><label>Date of birth<input id="dob" type="date"></label><button class="btn primary" id="age-go">Calculate age</button><p id="age-result" class="result"></p></article><article class="panel"><h3>Simple interest</h3><input id="si-p" type="number" placeholder="Principal (₹)"><input id="si-r" type="number" placeholder="Annual rate (%)"><input id="si-t" type="number" placeholder="Years"><button class="btn primary" id="si-go">Calculate</button><p id="si-result" class="result"></p></article></div></div>
+ <p class="tool-note muted">Privacy: supported operations run locally in this browser tab. Avoid using public/shared computers for sensitive documents. This toolset is an initial release, not a replacement for official government portals or professional document software.</p>
+</section>
+
+<section id="contact" class="view">
+  <div class="section-head">
+    <div>
+      <p class="eyebrow">WE'RE HERE TO HELP</p>
+      <h2>Contact &amp; Help</h2>
+      <p class="muted">Questions, suggestions, feedback or corrections? Contact us.</p>
+    </div>
+  </div>
+  <article class="panel contact-panel">
+    <h3>Contact Janaseva Hub</h3>
+    <p class="muted">For help, suggestions and feedback, email:</p>
+    <a class="contact-email" href="mailto:ramakrishnapiridi22@gmail.com">ramakrishnapiridi22@gmail.com</a>
+    <div class="card-actions">
+      <a class="btn primary" href="mailto:ramakrishnapiridi22@gmail.com?subject=Janaseva%20Hub%20Help%20or%20Suggestion">Send an email</a>
+      <a class="btn light" href="mailto:ramakrishnapiridi22@gmail.com?subject=Janaseva%20Hub%20Issue">Report an issue</a>
+    </div>
+    <p class="muted">Please do not email passwords, OTPs, Aadhaar numbers or banking details.</p>
+  </article>
+</section>
+
+<section id="terms" class="view">
+  <div class="section-head">
+    <div>
+      <p class="eyebrow">PLEASE READ</p>
+      <h2>Terms &amp; Conditions</h2>
+    </div>
+  </div>
+  <article class="panel policy-panel">
+    <p class="muted">Last updated: November 22, 2026</p>
+
+    <h3>1. About Janaseva Hub</h3>
+    <p>Janaseva Hub is an independent information and convenience platform. It is not a government website or government department and is not affiliated with any government agency unless expressly stated.</p>
+
+    <h3>2. Information accuracy</h3>
+    <p>Information about public services, announcements and learning resources is provided for general information. Details, eligibility, fees, deadlines and procedures may change. Always verify important information with the relevant official department or portal.</p>
+
+    <h3>3. External websites</h3>
+    <p>Links to government and third-party websites are provided for convenience. We do not control their content, availability, security or privacy practices. Their own terms and policies apply.</p>
+
+    <h3>4. Acceptable use</h3>
+    <p>Do not misuse the website, attempt unauthorized access, interfere with its operation, introduce malicious code or use it for unlawful or fraudulent activities.</p>
+
+    <h3>5. Privacy and documents</h3>
+    <p>Where tools state that files are processed in your browser, they are intended to be processed in that browser session. Avoid using shared devices for sensitive documents. Do not enter Aadhaar numbers, OTPs, passwords or payment details into Janaseva Hub.</p>
+
+    <h3>6. Intellectual property</h3>
+    <p>Original Janaseva Hub branding, interface and materials may not be copied or misrepresented without permission. Third-party and government materials remain subject to their respective owners' rights and terms.</p>
+
+    <h3>7. Availability and changes</h3>
+    <p>Features may be updated, suspended or discontinued. These terms may also be revised, with the updated version published on this page.</p>
+
+    <h3>8. Disclaimer</h3>
+    <p>The website is provided on an “as is” and “as available” basis. To the extent permitted by law, we are not responsible for losses arising from reliance on information, errors, interruptions or external websites. Liability that cannot legally be excluded is not excluded.</p>
+
+    <h3>9. Contact</h3>
+    <p>Questions about these terms: <a href="mailto:ramakrishnapiridi22@gmail.com">ramakrishnapiridi22@gmail.com</a>.</p>
+
+    <p class="muted">This is a general terms draft, not legal advice. Review it against actual website practices and applicable legal requirements before public launch.</p>
+  </article>
+</section>
+
+<footer>Janaseva Hub · Independent information tool · Verify every vacancy and scheme with its official source.</footer>
+<section class="view" id="ai-tools">
+<div class="section-head"><div><p class="eyebrow">DISCOVER USEFUL AI</p><h2>AI tools directory</h2><p class="muted">Explore AI services for learning, writing, research, design, video, audio and coding. Janaseva Hub links to providers; accounts and subscriptions are managed by each provider.</p></div></div>
+<div class="ai-safety">🔐 <span>Do not upload Aadhaar, PAN, bank details, passwords, OTPs, private documents or confidential information to third-party AI services. Check each provider's privacy terms and pricing before use.</span></div>
+<div class="ai-controls"><input aria-label="Search AI tools" class="search" id="ai-search" placeholder="Search AI tools or what you want to do…"/><select aria-label="Filter AI tools" class="service-filter" id="ai-category"><option value="all">All categories</option><option value="Assistant">AI assistants</option><option value="Research">Research &amp; study</option><option value="Writing">Writing &amp; language</option><option value="Image">Image &amp; design</option><option value="Video">Video</option><option value="Audio">Audio &amp; music</option><option value="Productivity">Productivity &amp; presentations</option><option value="Coding">Coding &amp; development</option></select></div>
+<div class="ai-summary"><span id="ai-count">AI tools directory</span><span>External services · Free and paid plans vary</span></div>
+<div class="ai-grid" id="ai-tools-list"></div>
+<p class="muted ai-footnote">Tool availability, features, regional access and prices can change. Some tools have free tiers, trials or usage limits; others require payment. Links open the provider's official website. This directory does not imply endorsement.</p>
+</section>
+</main>
+<dialog id="calendar-dialog" class="calendar-dialog">
+ <div class="calendar-dialog-head"><div><p class="eyebrow">JANASEVA HUB</p><h2 id="calendar-title">Holidays & Special Dates</h2></div><button type="button" class="calendar-close" id="calendar-close" aria-label="Close">×</button></div>
+ <div class="calendar-toolbar"><button type="button" id="calendar-prev" class="btn light" aria-label="Previous month">‹</button><strong id="calendar-month-label"></strong><button type="button" id="calendar-next" class="btn light" aria-label="Next month">›</button><select id="calendar-region" class="service-filter" aria-label="Region"><option value="all">All India</option><option value="central">Central / National</option><option value="state">State / UT</option></select><select id="calendar-state" class="service-filter" aria-label="Select State or UT"><option value="Andhra Pradesh">Andhra Pradesh</option><option value="Telangana">Telangana</option><option value="Karnataka">Karnataka</option><option value="Tamil Nadu">Tamil Nadu</option><option value="Other State / UT">Other State / UT</option></select></div>
+ <div class="calendar-layout"><div class="calendar-main"><div class="calendar-weekdays"><span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span></div><div id="calendar-days" class="calendar-days"></div><p class="calendar-note">State and UT public holidays vary by annual government notification. Confirm local holiday dates with the relevant state/UT government.</p></div><aside class="calendar-events"><h3 id="calendar-selected-label">Events</h3><div id="calendar-event-list"></div><div class="calendar-reminder-form"><h3>Personal reminder</h3><input type="date" id="calendar-reminder-date"><input type="text" id="calendar-reminder-title" maxlength="80" placeholder="Reminder title"><button type="button" class="btn primary" id="calendar-add-reminder">＋ Add reminder</button></div></aside></div>
+ <p class="calendar-source-note">Includes national observances and widely recognized special dates. This is an information calendar, not an official gazette holiday list.</p>
+</dialog>
+<dialog id="auth-dialog"><form method="dialog" class="dialog-close"><button aria-label="Close">×</button></form><h2 id="auth-title">Sign in</h2><form id="auth-form" class="form-stack"><div id="name-wrap" hidden><label>Name<input id="auth-name" autocomplete="name"></label></div><label>Email<input id="auth-email" type="email" required autocomplete="email"></label><label>Password<input id="auth-password" type="password" required minlength="8" autocomplete="current-password"></label><button class="btn primary">Continue</button></form><p id="auth-switch" class="muted">New here? <button class="text-btn" id="switch-auth">Create an account</button></p></dialog>
+<dialog id="item-dialog"><form method="dialog" class="dialog-close"><button aria-label="Close">×</button></form><h2 id="item-title">Add item</h2><form id="item-form" class="form-stack"></form></dialog>
+<script src="/i18n.js"></script><script src="/app.js"></script><script src="https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script><script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script><script src="https://cdn.jsdelivr.net/npm/mammoth@1.8.0/mammoth.browser.min.js"></script><script src="/tools.js"></script><script src="/services.js"></script><script src="/ai-tools.js"></script><script src="/learning.js"></script><script src="/calendar.js"></script><script src="/emergency.js"></script>
+
+<script>
+if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/service-worker.js')
+      .then(reg => console.log('Janaseva Hub offline support ready:', reg.scope))
+      .catch(err => console.error('PWA service worker registration failed:', err));
+  });
+}
+</script>
+
+</body></html>

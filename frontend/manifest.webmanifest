@@ -1,0 +1,19 @@
+{
+  "name": "Janaseva Hub",
+  "short_name": "Janaseva Hub",
+  "description": "Public services, learning resources and citizen support in one place.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#f5f7f2",
+  "theme_color": "#123c32",
+  "icons": [
+    {
+      "src": "/assets/janaseva-pwa.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}
