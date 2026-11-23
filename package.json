@@ -7,5 +7,7 @@
     "start": "npm --prefix backend start",
     "dev": "npm --prefix backend run dev"
   },
-  "engines": { "node": ">=20" }
+  "engines": {
+    "node": "22.x"
+  }
 }
