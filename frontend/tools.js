@@ -22,8 +22,28 @@
   images.forEach(f=>scannerPages.push({file:f,url:URL.createObjectURL(f)}));
   scannerRender();scannerStatus(`${images.length} image${images.length===1?'':'s'} added. You can add more pages or create a PDF.`);
  };
- $('#scanner-camera-input')?.addEventListener('change',e=>{scannerAddFiles(e.target.files||[]);e.target.value=''});
  $('#scanner-upload-input')?.addEventListener('change',e=>{scannerAddFiles(e.target.files||[]);e.target.value=''});
+ // Live camera is intentionally offered only on touch/mobile-sized devices.
+ const cameraButton=$('#scanner-open-camera'),cameraModal=$('#scanner-camera-modal'),cameraVideo=$('#scanner-camera-video');
+ const mobileScanner=()=>window.matchMedia('(max-width: 768px) and (pointer: coarse)').matches;
+ if(cameraButton){cameraButton.hidden=!mobileScanner();window.addEventListener('resize',()=>{cameraButton.hidden=!mobileScanner()})}
+ let cameraStream=null,cameraFacing='environment';
+ const stopScannerCamera=()=>{if(cameraStream){cameraStream.getTracks().forEach(t=>t.stop());cameraStream=null}if(cameraVideo)cameraVideo.srcObject=null;if(cameraModal)cameraModal.hidden=true};
+ const startScannerCamera=async()=>{
+  if(!navigator.mediaDevices?.getUserMedia){scannerStatus('Live camera needs a supported browser and a secure HTTPS connection.',true);return}
+  try{if(cameraStream)cameraStream.getTracks().forEach(t=>t.stop());cameraStream=await navigator.mediaDevices.getUserMedia({audio:false,video:{facingMode:{ideal:cameraFacing},width:{ideal:1920},height:{ideal:1080}}});cameraVideo.srcObject=cameraStream;cameraModal.hidden=false;await cameraVideo.play();scannerStatus('Camera ready. Position your document and tap Capture photo.')}
+  catch(err){stopScannerCamera();scannerStatus(err.name==='NotAllowedError'?'Camera permission was denied. Allow camera access in your browser settings.':'Could not open the camera. Check browser permissions and try again.',true)}
+ };
+ cameraButton?.addEventListener('click',startScannerCamera);
+ $('#scanner-camera-close')?.addEventListener('click',stopScannerCamera);
+ cameraModal?.addEventListener('click',e=>{if(e.target===cameraModal)stopScannerCamera()});
+ $('#scanner-camera-switch')?.addEventListener('click',async()=>{cameraFacing=cameraFacing==='environment'?'user':'environment';await startScannerCamera()});
+ $('#scanner-camera-capture')?.addEventListener('click',()=>{
+  if(!cameraVideo?.videoWidth){scannerStatus('Camera is not ready yet.',true);return}
+  const canvas=$('#scanner-camera-canvas');canvas.width=cameraVideo.videoWidth;canvas.height=cameraVideo.videoHeight;canvas.getContext('2d').drawImage(cameraVideo,0,0);
+  canvas.toBlob(blob=>{if(!blob){scannerStatus('Could not capture this image.',true);return}const shot=new File([blob],`janaseva-scan-${Date.now()}.jpg`,{type:'image/jpeg'});scannerAddFiles([shot]);},'image/jpeg',.94);
+ });
+ window.addEventListener('pagehide',stopScannerCamera);
  $('#scanner-pages')?.addEventListener('click',e=>{const b=e.target.closest('[data-scanner-remove]');if(!b)return;const i=Number(b.dataset.scannerRemove);const p=scannerPages.splice(i,1)[0];if(p)URL.revokeObjectURL(p.url);scannerRender();scannerStatus('Page removed.')});
  $('#scanner-clear-pages')?.addEventListener('click',()=>{scannerPages.forEach(p=>URL.revokeObjectURL(p.url));scannerPages.length=0;scannerRender();scannerStatus('All scanned pages cleared.')});
  $('#scanner-create-pdf')?.addEventListener('click',async()=>{
@@ -43,7 +63,16 @@
  const openGoogle=(url)=>{const w=window.open(url,'_blank','noopener,noreferrer');if(!w)scannerStatus('Your browser blocked the new tab. Allow pop-ups for this site and try again.',true)};
  $('#scanner-google-search')?.addEventListener('click',()=>{const q=$('#scanner-google-query')?.value.trim();if(!q){scannerStatus('Type a search phrase first.',true);$('#scanner-google-query')?.focus();return}openGoogle('https://www.google.com/search?q='+encodeURIComponent(q))});
  $('#scanner-google-query')?.addEventListener('keydown',e=>{if(e.key==='Enter')$('#scanner-google-search')?.click()});
- $('#scanner-google-lens')?.addEventListener('click',()=>openGoogle('https://lens.google.com/'));
+ // Google Lens: submit the selected image directly to Google's image-upload page.
+ $('#scanner-google-lens')?.addEventListener('click',()=>{
+  const item=scannerPages[scannerPages.length-1];
+  if(!item){scannerStatus('Capture or upload an image first, then open Google Lens.',true);return}
+  const form=document.createElement('form');form.method='POST';form.enctype='multipart/form-data';form.action='https://lens.google.com/v3/upload';form.target='_blank';form.style.display='none';
+  const input=document.createElement('input');input.type='file';input.name='encoded_image';
+  const dt=new DataTransfer();dt.items.add(item.file);input.files=dt.files;form.appendChild(input);document.body.appendChild(form);
+  try{form.submit();scannerStatus('Opening Google Lens with your latest scanned image.')}catch(e){scannerStatus('Could not send the image to Google Lens. Open Lens and upload the image manually.',true)}
+  setTimeout(()=>form.remove(),3000);
+ });
 
  const pdfReady=()=>{if(!window.PDFLib)throw Error('PDF library did not load. Check your internet connection and refresh.');return window.PDFLib};
  $('#pdf-merge-go')?.addEventListener('click',async()=>{try{const {PDFDocument}=pdfReady(),fs=[...$('#pdf-merge-files').files];if(fs.length<2)throw Error('Choose at least two PDF files.');const out=await PDFDocument.create();for(const f of fs){const src=await PDFDocument.load(await f.arrayBuffer());const pages=await out.copyPages(src,src.getPageIndices());pages.forEach(p=>out.addPage(p))}download(new Blob([await out.save()],{type:'application/pdf'}),'merged.pdf');msg('#pdf-merge-result','Merged successfully.')}catch(e){msg('#pdf-merge-result',e.message,true)}});

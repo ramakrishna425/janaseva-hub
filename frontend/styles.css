@@ -42,43 +42,5 @@
 /* Smart Scanner inside Document Studio */
 .scanner-workspace{margin:16px 0 20px;padding:20px}.scanner-heading{display:flex;justify-content:space-between;align-items:flex-start;gap:14px}.scanner-heading h3{font:800 21px Manrope;margin:0 0 6px}.scanner-heading p.muted{max-width:720px;margin:0 0 14px}.scanner-mark{display:grid;place-items:center;width:48px;height:48px;border-radius:14px;background:#eaf3ed;color:var(--green);font-size:34px}.scanner-search-row{padding:14px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}.scanner-search-label{display:block;font-size:12px;font-weight:800;margin-bottom:8px}.scanner-search-controls{display:flex;gap:8px;flex-wrap:wrap}.scanner-search-controls input{flex:1;min-width:190px;margin:0}.scanner-capture-row{display:flex;justify-content:space-between;align-items:center;gap:14px;padding:15px 0}.scanner-capture-row b{font-size:14px}.scanner-capture-row p{font-size:12px;margin:5px 0 0}.scanner-actions{display:flex;gap:8px;flex-wrap:wrap}.scanner-file-label{display:inline-flex;align-items:center;cursor:pointer}.visually-hidden-file{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;clip-path:inset(50%)}.scanner-file-label:focus-within,.scanner-file-label:focus{outline:2px solid var(--green);outline-offset:3px}.scanner-pages-wrap{border-top:1px solid var(--line);padding-top:14px}.scanner-pages-head,.scanner-export-row{display:flex;justify-content:space-between;align-items:center;gap:12px}.scanner-pages{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:10px;margin:12px 0}.scanner-page{position:relative;border:1px solid var(--line);border-radius:10px;padding:7px;background:#f8faf8}.scanner-page img{display:block;width:100%;height:125px;object-fit:contain;border-radius:6px}.scanner-page small{display:block;text-align:center;padding:5px 0;color:var(--muted)}.scanner-page button{position:absolute;right:10px;top:10px;border:0;border-radius:50%;width:27px;height:27px;background:#fff;color:#a33;font-size:17px;cursor:pointer;box-shadow:0 2px 8px #0002}.scanner-privacy{font-size:11px;line-height:1.5;margin:10px 0 0}.scanner-status-error{color:#a33}.scanner-export-row{flex-wrap:wrap}@media(max-width:650px){.scanner-workspace{padding:15px}.scanner-capture-row{align-items:flex-start;flex-direction:column}.scanner-actions{width:100%}.scanner-actions label{flex:1;justify-content:center}.scanner-search-controls button{flex:1}.scanner-export-row{align-items:flex-start;flex-direction:column}}
 
-/* Emergency helpline directory */
-.emergency-controls{display:flex;gap:10px;flex-wrap:wrap;margin:16px 0 22px}.emergency-controls .search{flex:1;min-width:220px}.emergency-subhead{margin:22px 0 10px}.emergency-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px}.emergency-card{background:var(--panel,#fff);border:1px solid var(--line);border-radius:14px;padding:15px;display:flex;flex-direction:column;gap:7px}.emergency-card h4{margin:0;font-size:15px}.emergency-card p{margin:0;color:var(--muted);font-size:13px;line-height:1.45}.emergency-number{font-size:24px;font-weight:800;letter-spacing:.3px;color:var(--green)}.emergency-call{align-self:flex-start;margin-top:5px;text-decoration:none}.emergency-tag{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}.emergency-sources{font-size:12px;color:var(--muted);margin:22px 0}.emergency-empty{padding:18px;border:1px dashed var(--line);border-radius:12px;color:var(--muted)}@media(max-width:650px){.emergency-controls{flex-direction:column}.emergency-controls>*{width:100%}}
-
-/* Expanded emergency directory */
-.emergency-actions{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-top:12px}
-.emergency-source{font-size:.78rem;color:var(--primary,#1456a0);text-decoration:underline}
-.emergency-card{min-width:0}
-
-/* Services state filter */
-.service-controls{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
-.service-controls .search{flex:1 1 260px;min-width:180px}
-.service-controls .service-filter{flex:0 1 250px;min-width:190px}
-
-
-/* Contact and Terms pages */
-.contact-panel, .policy-panel {
-  padding: clamp(20px, 4vw, 34px);
-  line-height: 1.7;
-}
-.contact-panel h3, .policy-panel h3 {
-  font-family: Manrope, sans-serif;
-  color: var(--deep);
-  margin: 20px 0 8px;
-}
-.contact-email {
-  display: inline-block;
-  color: var(--green);
-  font-weight: 800;
-  font-size: clamp(17px, 3vw, 22px);
-  overflow-wrap: anywhere;
-  margin: 10px 0;
-}
-.policy-panel p {
-  font-size: 14px;
-  line-height: 1.75;
-}
-.policy-panel a {
-  color: var(--green);
-  font-weight: 700;
-}
+/* Mobile-only live scanner camera */
+.scanner-camera-modal[hidden]{display:none!important}.scanner-camera-modal{position:fixed;inset:0;z-index:9999;background:#07110feF;display:grid;place-items:center;padding:14px}.scanner-camera-dialog{width:min(100%,680px);background:#fff;border-radius:18px;padding:14px;box-shadow:0 20px 70px #0007}.scanner-camera-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}.scanner-camera-close{border:0;background:#eef2ef;border-radius:50%;width:36px;height:36px;font-size:24px;cursor:pointer}.scanner-camera-dialog video{display:block;width:100%;max-height:65vh;min-height:220px;object-fit:contain;background:#101715;border-radius:12px}.scanner-camera-controls{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:12px}.scanner-camera-hint{font-size:12px;color:var(--muted);margin:10px 0 0;text-align:center}
